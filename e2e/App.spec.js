@@ -15,7 +15,7 @@ beforeAll(async () => {
         args: [`--window-size=${width},${height}`]
     });
     page = await browser.newPage();
-    await page.setViewport({ width, height });
+    await page.setViewport({width, height});
 });
 afterAll(() => {
     browser.close();
@@ -36,5 +36,13 @@ describe("App", () => {
         await page.click("button");
         const fizzText = await page.$eval(".fizzbuzz", el => el.textContent);
         expect(fizzText).toEqual("Fizz");
+
+        let content = await page.evaluate(() => {
+            let divs = [...document.querySelectorAll('.fizzbuzz')];
+            return divs.map((div) => div.textContent.trim());
+        });
+        expect(content[0]).toEqual('Fizz');
+        expect(content[1]).toEqual('Fuzz');
+        expect(content).toEqual(['Fizz', 'Fuzz']);
     });
 });
